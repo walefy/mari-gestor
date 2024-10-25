@@ -42,4 +42,28 @@ export class BillService {
       return [null, new ServiceError(errorMessage)];
     }
   }
+
+  public async removeBill(id: number): ServiceResponse<void> {
+    try {
+      const query = 'DELETE FROM bills WHERE id = $1';
+      await this.db.execute(query, [id]);
+
+      return [null, null];
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return [null, new ServiceError(errorMessage)];
+    }
+  }
+
+  public async updateBillStatus(id: number, status: boolean): ServiceResponse<Bill> {
+    try {
+      const query = 'UPDATE bills SET status = $1 WHERE id = $2';
+      const { lastInsertId } = await this.db.execute(query, [status, id]);
+
+      return this.getBillById(lastInsertId);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return [null, new ServiceError(errorMessage)];
+    }
+  }
 }

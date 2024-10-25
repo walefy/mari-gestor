@@ -102,6 +102,28 @@ function App() {
     fetchBills();
   };
 
+  const handleRemoveBill = async (id: number) => {
+    const [, error] = await billService.removeBill(id);
+
+    if (error) {
+      console.error('Failed to remove bill:', error);
+      return;
+    }
+
+    fetchBills();
+  };
+
+  const handlePaymentBill = async (id: number) => {
+    const [, error] = await billService.updateBillStatus(id, true);
+
+    if (error) {
+      console.error('Failed to payment bill:', error);
+      return;
+    }
+
+    fetchBills();
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 p-6 font-sans">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -124,7 +146,12 @@ function App() {
           onOpenChange={setBillModalStatus}
           handleAddBill={handleAddBill}
         >
-          <CardBill bills={bills} />
+          <CardBill
+            bills={bills}
+            salaries={salaries}
+            handleRemoveBill={handleRemoveBill}
+            handlePaymentBill={handlePaymentBill}
+          />
         </BillDialog>
       </div>
     </main>
