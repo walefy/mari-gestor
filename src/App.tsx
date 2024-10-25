@@ -10,10 +10,6 @@ import { Bill } from './types/bill';
 import { SalaryDialog } from './components/salary-dialog';
 import { BillDialog } from './components/bill-dialog';
 
-const db = await Database.load('sqlite://../database.db');
-const salaryService = new SalaryService(db);
-const billService = new BillService(db);
-
 function App() {
   const salaryNameRef = useRef<HTMLInputElement>(null);
   const salaryAmountRef = useRef<HTMLInputElement>(null);
@@ -23,42 +19,53 @@ function App() {
   const [billModalStatus, setBillModalStatus] = useState(false);
   const [salaries, setSalaries] = useState<Salary[]>([]);
   const [bills, setBills] = useState<Bill[]>([]);
+  
+  const [salaryService, setSalaryService] = useState<SalaryService | null>(null);
+  const [billService, setBillService] = useState<BillService | null>(null);
 
   useEffect(() => {
-    fetchSalaries();
-    fetchBills();
+    async function initializeDatabase() {
+      const db = await Database.load('sqlite://../database.db');
+      setSalaryService(new SalaryService(db));
+      setBillService(new BillService(db));
+    }
+
+    initializeDatabase();
   }, []);
 
+  useEffect(() => {
+    if (salaryService && billService) {
+      fetchSalaries();
+      fetchBills();
+    }
+  }, [salaryService, billService]);
+
   const fetchBills = () => {
-    billService.getAllBills().then(([bills, error]) => {
+    billService?.getAllBills().then(([bills, error]) => {
       if (error) {
         console.error('Failed to fetch bills:', error);
         return;
       }
-
       setBills(bills!);
     });
   };
 
   const fetchSalaries = () => {
-    salaryService.getAllSalaries().then(([salaries, error]) => {
+    salaryService?.getAllSalaries().then(([salaries, error]) => {
       if (error) {
         console.error('Failed to fetch salaries:', error);
         return;
       }
-
       setSalaries(salaries!);
     });
   };
 
   const handleRemoveSalary = async (id: number) => {
-    const [, error] = await salaryService.removeSalary(id);
-
+    const [, error] = await salaryService?.removeSalary(id) || [null, 'Service not available'];
     if (error) {
       console.error('Failed to remove salary:', error);
       return;
     }
-
     fetchSalaries();
   };
 
@@ -71,8 +78,7 @@ function App() {
       return;
     }
 
-    const [, error] = await salaryService.addSalary(inputName, Number(inputAmount));
-
+    const [, error] = await salaryService?.addSalary(inputName, Number(inputAmount)) || [null, 'Service not available'];
     if (error) {
       console.error('Failed to add salary:', error);
       return;
@@ -91,8 +97,7 @@ function App() {
       return;
     }
 
-    const [, error] = await billService.addBill(inputName, Number(inputAmount));
-
+    const [, error] = await billService?.addBill(inputName, Number(inputAmount)) || [null, 'Service not available'];
     if (error) {
       console.error('Failed to add bill:', error);
       return;
@@ -103,24 +108,20 @@ function App() {
   };
 
   const handleRemoveBill = async (id: number) => {
-    const [, error] = await billService.removeBill(id);
-
+    const [, error] = await billService?.removeBill(id) || [null, 'Service not available'];
     if (error) {
       console.error('Failed to remove bill:', error);
       return;
     }
-
     fetchBills();
   };
 
   const handlePaymentBill = async (id: number) => {
-    const [, error] = await billService.updateBillStatus(id, true);
-
+    const [, error] = await billService?.updateBillStatus(id, true) || [null, 'Service not available'];
     if (error) {
       console.error('Failed to payment bill:', error);
       return;
     }
-
     fetchBills();
   };
 
