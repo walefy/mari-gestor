@@ -18,9 +18,9 @@ function App() {
     initializeDatabase();
   }, []);
 
-  if (!billService && !salaryService) return <p>loading...</p>;
+  if (!billService || !salaryService) return <p>loading...</p>;
 
-  return <Home billService={billService!} salaryService={salaryService!} />;
+  return <Home billService={billService} salaryService={salaryService} />;
 }
 
 export default App;
