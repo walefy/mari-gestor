@@ -23,6 +23,8 @@ function App() {
   const [salaryService, setSalaryService] = useState<SalaryService | null>(null);
   const [billService, setBillService] = useState<BillService | null>(null);
 
+  const totalSalary = salaries.reduce((acc, salary) => acc + salary.amount, 0);
+
   useEffect(() => {
     async function initializeDatabase() {
       const db = await Database.load('sqlite://./database.db');
@@ -138,7 +140,7 @@ function App() {
           >
             <CardSalary salaries={salaries} handleRemoveSalary={handleRemoveSalary} />
           </SalaryDialog>
-          <CardResume />
+          <CardResume bills={bills} totalSalary={totalSalary} />
         </div>
         <BillDialog
           open={billModalStatus}
@@ -150,6 +152,7 @@ function App() {
           <CardBill
             bills={bills}
             salaries={salaries}
+            totalSalary={totalSalary}
             handleRemoveBill={handleRemoveBill}
             handlePaymentBill={handlePaymentBill}
           />

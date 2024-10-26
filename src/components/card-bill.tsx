@@ -18,18 +18,18 @@ import { MenuBillDialog } from './menu-bill-dialog';
 type CardBillProps = {
   bills: Bill[];
   salaries: Salary[];
+  totalSalary: number;
   handleRemoveBill: (id: number) => Promise<void>;
   handlePaymentBill: (id: number) => Promise<void>;
 }
 
-export function CardBill({ bills, salaries, handlePaymentBill, handleRemoveBill }: CardBillProps) {
+export function CardBill({ bills, salaries, handlePaymentBill, handleRemoveBill, totalSalary }: CardBillProps) {
   const [open, setOpen] = useState(false);
   const [clickedId, setClickedId] = useState<number | null>(null);
 
-  const totalSalaries = salaries.reduce((acc, salary) => acc + salary.amount, 0);
   const percentPerSalary = salaries.map((salary) => ({
     name: salary.name,
-    percent: salary.amount / totalSalaries,
+    percent: salary.amount / totalSalary,
   }));
 
   const handlePaymentWithDialog = async (id: number) => {
@@ -82,7 +82,7 @@ export function CardBill({ bills, salaries, handlePaymentBill, handleRemoveBill 
                   onClick={() => handleOpenDialog(bill.id)}
                 >
                   <TableCell>{bill.name}</TableCell>
-                  <TableCell>{bill.amount}</TableCell>
+                  <TableCell>{bill.amount.toFixed(2)}</TableCell>
                   {percentPerSalary.map((percent) => (
                     <TableCell key={percent.name}>{(percent.percent * bill.amount).toFixed(2)}</TableCell>
                   ))}
