@@ -19,7 +19,7 @@ export function MenuBillDialog({ children, open, onOpenChange, handleRemoveBill,
         <DialogHeader>
           <DialogTitle>Gerencie sua conta</DialogTitle>
         </DialogHeader>
-          <Button onClick={handleRemoveBill} className="bg-transparent">
+          <Button onClick={handleRemoveBill} className="bg-transparent cursor-default">
             <Trash2 className="w-6 h-6 ml-2 hover:brightness-50 text-red-500" />
             Apagar conta
           </Button>

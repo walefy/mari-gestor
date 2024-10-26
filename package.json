@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:exe": "NO_STRIP=true bun tauri build --verbose",
     "preview": "vite preview",
     "tauri": "tauri",
     "lint": "bunx --bun eslint src",
