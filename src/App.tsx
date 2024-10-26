@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     async function initializeDatabase() {
-      const db = await Database.load('sqlite://../database.db');
+      const db = await Database.load('sqlite://./database.db');
       setSalaryService(new SalaryService(db));
       setBillService(new BillService(db));
     }

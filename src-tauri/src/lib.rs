@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS bills (
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    match std::env::current_dir() {
+        Ok(path) => println!("Current directory: {}", path.display()),
+        Err(e) => eprintln!("Error getting current directory: {}", e),
+    }
+
     let migrations = vec![
         Migration {
             version: 1,
@@ -35,7 +40,7 @@ pub fn run() {
     ];
 
     let sql_plugin = tauri_plugin_sql::Builder::new()
-        .add_migrations("sqlite://../database.db", migrations)
+        .add_migrations("sqlite://./database.db", migrations)
         .build();
 
     tauri::Builder::default()

@@ -11,7 +11,7 @@
   },
   "plugins": {
     "sql": {
-      "preload": ["sqlite://../database.db"]
+      "preload": ["sqlite://./database.db"]
     }
   },
   "app": {
